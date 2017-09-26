@@ -1,0 +1,48 @@
+service: book-api
+
+provider:
+  name: aws
+  runtime: nodejs6.10
+  stage: dev
+  region: eu-west-2
+
+
+
+functions:
+  create:
+    handler: handler.create
+    events:
+      - http:
+          path: ${self:service}/books
+          method: post
+          cors: true
+
+
+resources:
+  Resources:
+    BooksDynamoDbTable:
+      Type: 'AWS::DynamoDB::Table'
+      Properties:
+        TableName: 'Books'
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+    DynamoDBIamPolicy:
+      Type: 'AWS::IAM::Policy'
+      Properties:
+        PolicyName: lambda-dynamodb
+        PolicyDocument:
+          Statement:
+            - Effect: Allow
+              Action:
+                - dynamodb:Scan
+                - dynamodb:PutItem
+              Resource: arn:aws:dynamodb:*:*:table/Books
+        Roles:
+          - Ref: IamRoleLambdaExecution
