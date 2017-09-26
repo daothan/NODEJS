@@ -5,7 +5,7 @@ provider:
   runtime: nodejs6.10
   stage: dev
   region: eu-west-2
-
+  profile: default
 
 
 functions:
@@ -13,10 +13,17 @@ functions:
     handler: handler.create
     events:
       - http:
-          path: ${self:service}/books
+          path: books
           method: post
           cors: true
 
+  list:
+    handler: handler.list
+    events:
+      - http: 
+          path: books
+          method: get
+          cors: true
 
 resources:
   Resources:
