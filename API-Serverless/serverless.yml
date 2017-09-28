@@ -25,6 +25,31 @@ functions:
           method: get
           cors: true
 
+  listById:
+    handler: handler.listById
+    events:
+      - http:
+          path: books/{id}
+          method: get
+          cors: true
+
+  update:
+    handler: handler.update
+    events:
+      - http:
+          path: books/{id}
+          method: put
+          cors: true
+
+  delete:
+    handler: handler.delete
+    events:
+      - http:
+          path: books/{id}
+          method: delete
+          cors: true
+
+
 resources:
   Resources:
     BooksDynamoDbTable:
@@ -49,7 +74,10 @@ resources:
             - Effect: Allow
               Action:
                 - dynamodb:Scan
+                - dynamodb:GetItem
                 - dynamodb:PutItem
+                - dynamodb:UpdateItem
+                - dynamodb:DeleteItem
               Resource: arn:aws:dynamodb:*:*:table/Books
         Roles:
           - Ref: IamRoleLambdaExecution
